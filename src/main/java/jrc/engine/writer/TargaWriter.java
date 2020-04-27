@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.stream.IntStream;
 
-import jrc.engine.BufferInfo;
+import jrc.engine.DataBuffer;
+import jrc.engine.Color;
 
 public class TargaWriter implements Closeable {
     
@@ -15,10 +16,10 @@ public class TargaWriter implements Closeable {
         this.stream = stream;
     }
     
-    public void write(BufferInfo image) {
+    public void write(DataBuffer<? extends Color> image) {
         try {
             writeHeader(image, stream);
-            writeData(image, stream);      
+            writeData(image, stream);
             writeFooter(stream);
             stream.flush();
         }
@@ -27,12 +28,12 @@ public class TargaWriter implements Closeable {
         }
     }
 
-    private void writeData(BufferInfo image, OutputStream stream) {
+    private void writeData(DataBuffer<? extends Color> image, OutputStream stream) {
         IntStream.range(0, image.getHeight())
             .forEach(y -> writeRow(image, y, stream));
     }
 
-    private void writeHeader(BufferInfo image, OutputStream stream) throws IOException {
+    private void writeHeader(DataBuffer<? extends Color> image, OutputStream stream) throws IOException {
         // https://en.wikipedia.org/wiki/Truevision_TGA
         byte[] header = new byte[18];
         header[2] = 2; // [image type] uncompressed true-color image
@@ -52,7 +53,7 @@ public class TargaWriter implements Closeable {
         stream.write(footer);
     }
 
-    private void writeRow(BufferInfo image, int y, OutputStream stream) {
+    private void writeRow(DataBuffer<? extends Color> image, int y, OutputStream stream) {
         byte[] row = new byte[3 * image.getWidth()];       
         IntStream.range(0, image.getWidth())
             .forEach(x -> {
