@@ -1,19 +1,22 @@
 package jrc.engine;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jrc.engine.exception.OutOfRangeException;
+import lombok.Getter;
 
 public abstract class DataBuffer<T> {
     
-    private List<T> data;
+    private final List<T> data;
     
-    private int width;
-    private int height;
+    @Getter
+    private final int width;
+    
+    @Getter
+    private final int height;
     
     public DataBuffer(int width, int height, Supplier<T> initElementFn) {
         if (width < 1 || width > Short.MAX_VALUE) {
@@ -26,32 +29,29 @@ public abstract class DataBuffer<T> {
         
         this.width = width;
         this.height = height;
-        
+       
         data = Stream.generate(initElementFn)
            .limit(width * height)
            .collect(Collectors.toList());
     }
-  
-    public int getWidth() { return width;}
-    public int getHeight() {return height;}
-    
-    public T get(int x, int y) {
+
+    public final T get(int x, int y) {
         validate(x, y);
         return get(y * width + x);
     }
    
-    public T get(int linear) {
-        return data.get(linear);
+    public T get(int byIndex) {
+        return data.get(byIndex);
     }
     
-    public void set(int x, int y, T value) {
-        validate(x, y);
-        Objects.requireNonNull(value);
-        data.set(y * width + x, value);
+    public final void set(int x, int y, T value) {
+        if (validateNoThrow(x, y)) {
+            set(y * width + x, value);
+        }
     }
     
-    public void set(int linear, T value) {
-        data.set(linear, value);
+    public void set(int byIndex, T value) {
+        data.set(byIndex, value);
     }
     
     private void validate(int x, int y) {
@@ -62,5 +62,15 @@ public abstract class DataBuffer<T> {
         if ((y < 0) || (y >= getHeight())) {
             throw new OutOfRangeException("y", y, getHeight());
         }
+    }
+    
+    private boolean validateNoThrow(int x, int y) {
+        if ((x < 0) || (x >= getWidth())) {
+            return false;
+        }
+        if ((y < 0) || (y >= getHeight())) {
+            return false;
+        }
+        return true;
     }
 }
