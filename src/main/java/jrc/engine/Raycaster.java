@@ -14,4 +14,8 @@ public class Raycaster {
     public static List<RayCastResult> solve(GameMap gameMap, Player player, int rayCount) {
         return List.of();
     }
+    
+    public static RayCastResult solve(GameMap gameMap, Vector2D position, Vector2D viewRay) {
+        return null;
+    }
 }

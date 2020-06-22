@@ -18,7 +18,6 @@ public class World {
         // and then to image
         // draw map
         // draw player
-        map.drawTo(image);
-        player.drawTo(image, map.getCellSize());
+
     }
 }

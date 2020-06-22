@@ -17,24 +17,19 @@ public class App {
         var image = new Framebuffer(1024, 512);
        
         var map = initMap();
+        var p = new Player(3.4f, 2.8f, 35);
         
-        // image, map, arbitrary
-        // how to convert between them?
-        // how to map player coords to map cell-coords ?
-
-        // in which coordinate system these numbers ???
-        // let's assume that currently these are image coordinates!
-        var p = new Player(3.4f, 2.8f, 0);
+        map.drawTo(image);
+        p.drawTo(image, map.getCellSize());
+        //p.setX(0);
+        //p.setY(0);
+        //p.drawTo(image, map.getCellSize());
         
-        var world = new World(map, p);
-        world.drawTo(image);
-        
-        for (var a = 0; a < 360; a += 15) {
-            p.setAngle(a);
-            p.drawTo(image, map.getCellSize());
-            dump(image, "output-"+a);
-        }
-        //image.drawPoint(100, 100, 3, Color.WHITE);
+//        for (var a = 0; a < 360; a += 15) {
+//            p.setAngle(a);
+//            p.drawTo(image, map.getCellSize());
+//            dump(image, "output-"+a);
+//        }
 
         dump(image, "output-final");
     }

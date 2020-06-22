@@ -11,7 +11,7 @@ public class Vector2D {
     private final double x;
     private final double y;
     
-    public Vector2D transpose(double x, double y) {
+    public Vector2D translate(double x, double y) {
         return new Vector2D(this.x + x, this.y + y);
     }
 
@@ -24,18 +24,22 @@ public class Vector2D {
         this.y = that.getY();
     }
 
-    public static Vector2D of(int x, int y) {
+    public static Vector2D of(double x, double y) {
         return new Vector2D(x, y);
     }
 
     public Vector2D transpose(Vector2D by) {
-        return transpose(by.x, by.y);
+        return translate(by.x, by.y);
     }
 
-    public Vector2D rotate(float angle) {
+    public Vector2D rotate(double angle) {
         var rad = Math.toRadians(angle);
         var ca = Math.cos(rad);
         var sa = Math.sin(rad);
         return new Vector2D(ca * x - sa * y, sa * x + ca * y);
+    }
+
+    public Vector2D scale(int factor) {
+        return new Vector2D(x * factor, y * factor);
     }
 }

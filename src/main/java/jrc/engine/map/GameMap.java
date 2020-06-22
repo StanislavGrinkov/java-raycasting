@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 import jrc.engine.Color;
 import jrc.engine.DataBuffer;
 import jrc.engine.Framebuffer;
+import jrc.engine.type.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +43,7 @@ public class GameMap extends DataBuffer<CellType> {
             IntStream.range(0, getWidth()).forEach(x -> {
                 var value = get(x, y);
                 var c = valueToColor.getOrDefault(value, CellSharedData.EMPTY);
-                image.drawRect(x * cellSize, y * cellSize, cellSize, c.getColor());
+                image.drawRect(new Vector2D(x * cellSize + 1, y * cellSize+1), cellSize-2, c.getColor());
             });
         });
     }

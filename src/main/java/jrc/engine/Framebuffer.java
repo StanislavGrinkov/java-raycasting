@@ -22,13 +22,16 @@ public class Framebuffer extends DataBuffer<Color> {
             super.set(byIndex, value);
     }
     
-    public void drawPoint(int centerX, int centerY, int size, Color fillColor) {
-        drawRect(centerX - size / 2, centerY - size / 2, size, fillColor);
+    public void drawPoint(Vector2D center, int size, Color fillColor) {
+        var shift = size / 2;
+        drawRect(center.translate(shift, shift), size, fillColor);
     }
     
-    public void drawRect(int startX, int startY, int size, Color fillColor) {
-        int endX = Math.min(startX + size, getWidth());
-        int endY = Math.min(startY + size, getHeight());
+    public void drawRect(Vector2D topLeftCorner, int size, Color fillColor) {
+        int startX = (int)topLeftCorner.getX();
+        int startY = (int)topLeftCorner.getY();
+        int endX = (int)Math.min(topLeftCorner.getX() + size, getWidth());
+        int endY = (int)Math.min(topLeftCorner.getY() + size, getHeight());
         
         IntStream.rangeClosed(startY, endY).forEach(y -> {
               IntStream.rangeClosed(startX, endX).forEach(x -> {
@@ -51,8 +54,8 @@ public class Framebuffer extends DataBuffer<Color> {
         
         double deltaX = Math.abs(steps.getX() / stepCount);
         double deltaY = Math.abs(steps.getY() / stepCount);
-        double accumX = 0;
-        double accumY = 0;
+        double accumX = 0.5;
+        double accumY = 0.5;
         var point = new Vector2D(start);
         for (var step = 0; step <= stepCount; ++step) {
             set((int)point.getX(), (int)point.getY(), color);
@@ -61,12 +64,12 @@ public class Framebuffer extends DataBuffer<Color> {
             
             if (accumX >= 1) {
                 --accumX;
-                point = point.transpose(1*sign.getX(), 0);
+                point = point.translate(1*sign.getX(), 0);
             }
             
             if (accumY >= 1) {
                 --accumY;
-                point = point.transpose(0, 1*sign.getY());
+                point = point.translate(0, 1*sign.getY());
             }
             
                    
